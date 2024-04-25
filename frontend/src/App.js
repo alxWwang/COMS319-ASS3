@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 function App() {
   const [Items, setItems] = useState([]);
   const [currentView1, setCurrentView1] = useState(0);
-  const [creating, setCreating ] = useState(false)
   const changeView = (i) => {
     setCurrentView1(i);
     if (i === 1){
@@ -63,7 +62,19 @@ function App() {
     }
   }
 
-  let create = async (data) =>{
+  let create = async () =>{
+    const data = {
+      id: 99,
+      title: 'CREATE 2',
+      price: 99,
+      description: 'TESITING CREATE',
+      category: "TESTING CREATE",
+      image: 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg',
+      rating: { rate: 3.9, count: 120 }
+    }
+
+
+
     try {
       const response = await fetch(`http://localhost:8081/create`, {
         method: 'PUT',
@@ -131,12 +142,10 @@ function App() {
     }
 
     let original = "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops"
-    update(item)
     return(
-    <div>
+    <button onClick={update(item)}>
       hello this is update
-      <div><ShowItems/></div>
-    </div>)
+    </button>)
 
   }
 
@@ -144,22 +153,7 @@ function App() {
     return (<div> hello this is delete</div>)
   }
   let CreateItems = () =>{
-    const item = {
-      id: 99,
-      title: 'CREATE 2',
-      price: 99,
-      description: 'TESITING CREATE',
-      category: "TESTING CREATE",
-      image: 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg',
-      rating: { rate: 3.9, count: 120 }
-    }
-
-      console.log('creates')
-
-    
-    
-
-    return (<div> hello this is create</div>)
+    return (<button onClick={create}> hello this is create</button>)
   }
 
   return (
