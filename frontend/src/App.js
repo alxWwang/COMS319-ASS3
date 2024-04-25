@@ -58,7 +58,27 @@ function App() {
       console.error('Update failed:', error);
     }
   }
+
+  let create = async (data) =>{
+    try {
+      const response = await fetch(`http://localhost:8081/create`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
   
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      } else {
+        const result = await response.json();
+        console.log('Update result:', result);
+      }
+    } catch (error) {
+      console.error('Update failed:', error);
+    }
+  }
 
   let cardArray = Items.map((item) => (
     <div key={item["title"]}>
@@ -108,13 +128,30 @@ function App() {
 
     let original = "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops"
     update(item)
-    return(<div>hello this is update</div>)
+    return(
+    <div>
+      hello this is update
+      <div><ShowItems/></div>
+    </div>)
+
   }
 
   let DeleteItems = () =>{
     return (<div> hello this is delete</div>)
   }
   let CreateItems = () =>{
+    console.log('runs')
+    const item = {
+      id: 99,
+      title: 'CREATE 2',
+      price: 99,
+      description: 'TESITING CREATE',
+      category: "TESTING CREATE",
+      image: 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg',
+      rating: { rate: 3.9, count: 120 }
+    }
+    create(item)
+
     return (<div> hello this is create</div>)
   }
 
