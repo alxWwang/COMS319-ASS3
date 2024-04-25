@@ -46,7 +46,7 @@ app.delete('/delete', async (req,res)=>{
 })
 
 app.put('/create', async(req,res)=>{
-
+    console.log('conn')
     const keys = Object.keys(req.body);
     const values = Object.values(req.body);
 
