@@ -3,13 +3,11 @@ import React, { useState, useEffect } from "react";
 function App() {
   const [Items, setItems] = useState([]);
   const [currentView1, setCurrentView1] = useState(0);
-  useEffect(() => {
-    loadAll();
-  }, []);
-
   const changeView = (i) => {
-
     setCurrentView1(i);
+    if (i === 1){
+      loadAll()
+    }
 };
   let buttonContent = "";
     switch (currentView1) {
@@ -24,8 +22,8 @@ function App() {
         break;
     }
 
-  let loadAll = () => {
-    fetch("http://localhost:8081/").then((response) => {
+  let loadAll = async () => {
+    await fetch("http://localhost:8081/").then((response) => {
       if (!response.ok) {
         throw new Error("err: ${response.status}");
       }
@@ -38,7 +36,29 @@ function App() {
         setItems(tmp);
       });
     });
-  };
+  }
+
+  let update = async (data) => {
+    try {
+      const response = await fetch(`http://localhost:8081/updateRobot/${data.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      } else {
+        const result = await response.json();
+        console.log('Update result:', result);
+      }
+    } catch (error) {
+      console.error('Update failed:', error);
+    }
+  }
+  
 
   let cardArray = Items.map((item) => (
     <div key={item["title"]}>
@@ -75,6 +95,19 @@ function App() {
   };
 
   let UpdateItems = ()=>{
+
+    const item = {
+      id: 1,
+      title: 'Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops',
+      price: 109.95,
+      description: 'Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday',
+      category: "men's clothing",
+      image: 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg',
+      rating: { rate: 3.9, count: 120 }
+    }
+
+    let original = "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops"
+    update(item)
     return(<div>hello this is update</div>)
   }
 

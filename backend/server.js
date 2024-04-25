@@ -89,24 +89,24 @@ app.put("/updateRobot/:id", async (req, res) => {
       price: req.body.price,
       rating: req.body.rating,
       title: req.body.title,
-      _id: req.body._id
     },
   };
 
   // Add options if needed, for example { upsert: true } to create a document if it doesn't exist
   const options = {};
-  const results = await db .collection("robot").updateOne(query, updateData, options);
+  const results = await db.collection("fakestore").updateOne(query, updateData, options);
 
   // If no document was found to update, you can choose to handle it by sending a 404 response
   if (results.matchedCount === 0) {
-    return res.status(404).send({ message: 'Robot not found' });
+    return res.status(404).send({ message: 'item not found' });
   }
-
+  console.log('success')
+  console.log(results)
   res.status(200);
   res.send(results);
   // res.send(robotUpdated);
 }
 catch(error){
-  console.error("Error updating robot:", error);
-        res.status(500).send({ message: 'Failed to update robot' });
+  console.error("Error updating item:", error);
+        res.status(500).send({ message: 'Failed to update item' });
 }})
