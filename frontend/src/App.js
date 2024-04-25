@@ -62,16 +62,8 @@ function App() {
     }
   }
 
-  let create = async () =>{
-    const data = {
-      id: 99,
-      title: 'CREATE 2',
-      price: 99,
-      description: 'TESITING CREATE',
-      category: "TESTING CREATE",
-      image: 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg',
-      rating: { rate: 3.9, count: 120 }
-    }
+  let create = async (data) =>{
+
 
 
 
@@ -132,7 +124,7 @@ function App() {
   let UpdateItems = ()=>{
 
     const item = {
-      id: 1,
+      id: 99,
       title: 'Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops',
       price: 109.95,
       description: 'Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday',
@@ -143,7 +135,7 @@ function App() {
 
     let original = "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops"
     return(
-    <button onClick={update(item)}>
+    <button onClick={()=>{update(item)}}>
       hello this is update
     </button>)
 
@@ -153,7 +145,16 @@ function App() {
     return (<div> hello this is delete</div>)
   }
   let CreateItems = () =>{
-    return (<button onClick={create}> hello this is create</button>)
+    const data = {
+      id: 99,
+      title: 'CREATE 2',
+      price: 99,
+      description: 'TESITING CREATE',
+      category: "TESTING CREATE",
+      image: 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg',
+      rating: { rate: 3.9, count: 120 }
+    }
+    return (<button onClick={()=>{create(data)}}> hello this is create</button>)
   }
 
   return (
