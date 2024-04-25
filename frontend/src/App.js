@@ -3,10 +3,14 @@ import React, { useState, useEffect } from "react";
 function App() {
   const [Items, setItems] = useState([]);
   const [currentView1, setCurrentView1] = useState(0);
+  const [creating, setCreating ] = useState(false)
   const changeView = (i) => {
     setCurrentView1(i);
     if (i === 1){
       loadAll()
+    }
+    if(i === 4){
+      console.log('true')
     }
 };
   let buttonContent = "";
@@ -140,7 +144,6 @@ function App() {
     return (<div> hello this is delete</div>)
   }
   let CreateItems = () =>{
-    console.log('runs')
     const item = {
       id: 99,
       title: 'CREATE 2',
@@ -150,7 +153,9 @@ function App() {
       image: 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg',
       rating: { rate: 3.9, count: 120 }
     }
-    create(item)
+
+    console.log('creates')
+    
 
     return (<div> hello this is create</div>)
   }
