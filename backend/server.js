@@ -60,7 +60,7 @@ app.post('/create', async(req,res)=>{
      price: values[2], 
      description: values[3], 
      category: values[4],
-     imageUrl: values[5], 
+     image: values[5], 
      rating:values[6],
  };
 
@@ -69,7 +69,7 @@ app.post('/create', async(req,res)=>{
 
     console.log(coll);
     console.log("Document inserted");
-    alert("Items added successfully!, will auto go to View All");
+    alert("Items added successfully!, pls click the View All button to see your added items");
     res.status(200).send({ message: "Document inserted successfully" });
   } catch (error) {
     console.error("An error occurred:", error);

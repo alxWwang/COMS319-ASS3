@@ -4,10 +4,12 @@ import { useForm } from "react-hook-form";
 function App() {
   const [Items, setItems] = useState([]);
   const [currentView1, setCurrentView1] = useState(0);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm();
 
   const [searchItemID, setSearchItemID] = useState(-1);
@@ -28,8 +30,9 @@ function App() {
     create(datajson);
   };
 
-  const onSubmitDel = (data) => {
-    deletor(data.id);
+  const onSubmit2 = (data) => {
+    console.log(data);
+    // searchItem (data);
   };
 
   const changeView = (i) => {
@@ -109,16 +112,14 @@ function App() {
       .then((response) => response.json())
       .then((data) => {
         console.log("Success:", data);
-
-        //set the current view to 1 after adding the items
-        setCurrentView1(1);
-        //additem
-        // setItems([...Items, { ...data}]);
+        alert("Items added successfully!, pls click the View All button to see your added items"); 
+        reset();   
       })
       .catch((error) => {
         console.error("Error:", error);
         alert("Failed to add items");
       });
+     
   };
 
   let cardArray = Items.map((item) => (
@@ -188,7 +189,7 @@ function App() {
     let price;
     let description;
     let category;
-    let imageUrl;
+    let image;
     let rating;
 
     function getInputValue(myItems) {
@@ -199,7 +200,7 @@ function App() {
           price = myItems[i].price;
           description = myItems[i].description;
           category = myItems[i].category;
-          imageUrl = myItems[i].imageUrl;
+          image = myItems[i].image;
           rating = myItems[i].rate;
           break;
         }
@@ -211,7 +212,7 @@ function App() {
         <div key={title}>
           <div className="col mb-4" key={id}>
             <div className="card shadow-sm">
-              <img src={imageUrl} alt={title} className="card-img-top" />
+              <img src={image} alt={title} className="card-img-top" />
               <div className="card-body">
                 <h5 className="card-title">{title}</h5>
                 <p className="card-text">{price}</p>
@@ -225,33 +226,19 @@ function App() {
   };
 
   let DeleteItems = () => {
-    // const item = {
-    //   id: 0,
-    //   title: "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
-    //   price: 109.95,
-    //   description:
-    //     "Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",
-    //   category: "men's clothing",
-    //   image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
-    //   rating: { rate: 3.9, count: 120 },
-    // };
-
     return (
       <>
         <div className="container" style={{ paddingTop: "3rem" }}>
-          <form className="container mt-5" style={{ paddingBottom: "3rem" }}>
+          <form onSubmit={handleSubmit(onSubmit2)} className="container mt-5">
+            {/* Form fields remain the same, but ensure names match the backend expectations */}
             <label htmlFor="id" style={{ paddingTop: "1rem" }}>
               ID:
             </label>
-            <input
-              type="text"
-              onChange={(e) => setSearchItemID(e.target.value)} // Update the state when input changes
-              className="form-control"
-            />
+            <input {...register("id")} type="text" className="form-control" />
           </form>
-
-          <button onClick={() => searchItem(searchItemID)}>Search</button>
-
+          <button type="submit" className="btn btn-primary ">
+              Search
+          </button>
           <div>
             {searchItemID != -1 && (
               <button onClick={() => deletor(searchItemID)}>Delete</button>
