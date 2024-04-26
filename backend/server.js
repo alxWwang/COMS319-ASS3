@@ -5,7 +5,8 @@ var bodyParser = require("body-parser");
 const {MongoClient}= require('mongodb')
 
 const url = "mongodb://127.0.0.1:27017";
-const dbName = "reactdata";
+const dbName = "reactdata";   
+
 const client = new MongoClient(url);
 const db = client.db(dbName);
 
@@ -52,7 +53,7 @@ app.post('/create', async(req,res)=>{
    const values = Object.values(req.body);
 
    console.log(values[0]);
-   
+
    const newDocument = {
      id: values[0], 
      title: values[1], 
