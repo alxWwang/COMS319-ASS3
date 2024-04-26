@@ -31,7 +31,7 @@ app.get('/', async (req, res) => {
     res.send(results)
 });
 
-app.delete('/delete', async (req,res)=>{
+app.delete('/delete/:id', async (req,res)=>{
 
   const id = Number(req.params.id);
 

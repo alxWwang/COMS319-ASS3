@@ -12,18 +12,6 @@ function App() {
       console.log('true')
     }
 };
-  let buttonContent = "";
-    switch (currentView1) {
-        case 1:
-        buttonContent = "Cart";
-        break;
-        case 2:
-        buttonContent = "Browse";
-        break;
-        default:
-        buttonContent = "Cart";
-        break;
-    }
 
   let loadAll = async () => {
     await fetch("http://localhost:8081/").then((response) => {
@@ -62,11 +50,28 @@ function App() {
     }
   }
 
+  let deletor = async (data) => {
+    try {
+      const response = await fetch(`http://localhost:8081/delete/${data.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      } else {
+        const result = await response.json();
+        console.log('delete result:', result);
+      }
+    } catch (error) {
+      console.error('delete failed:', error);
+    }
+  }
+
   let create = async (data) =>{
-
-
-
-
     try {
       const response = await fetch(`http://localhost:8081/create`, {
         method: 'PUT',
@@ -124,7 +129,7 @@ function App() {
   let UpdateItems = ()=>{
 
     const item = {
-      id: 99,
+      id: 0,
       title: 'Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops',
       price: 109.95,
       description: 'Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday',
@@ -142,11 +147,26 @@ function App() {
   }
 
   let DeleteItems = () =>{
-    return (<div> hello this is delete</div>)
+
+    const item = {
+      id: 0,
+      title: 'Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops',
+      price: 109.95,
+      description: 'Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday',
+      category: "men's clothing",
+      image: 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg',
+      rating: { rate: 3.9, count: 120 }
+    }
+
+    return (
+    <button  onClick={()=>{deletor(item)}}>
+      hello this is delete
+    </button>
+  )
   }
   let CreateItems = () =>{
     const data = {
-      id: 99,
+      id: 0,
       title: 'CREATE 2',
       price: 99,
       description: 'TESITING CREATE',
