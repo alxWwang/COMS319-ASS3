@@ -29,7 +29,7 @@ function App() {
     };
     console.log(datajson);
     await searchItem(datajson)
-    deletor(datajson)
+    //deletor(datajson)
   };
   const onSubmit = (data) => {
     const datajson = {
@@ -199,18 +199,10 @@ function App() {
     function getInputValue(myItems) {
       for (let i in myItems) {
         if (myItems[i].id === parseInt(data.id)) {
-          let id = myItems[i].id;
-          let title = myItems[i].title;
-          let price = myItems[i].price;
-          let description = myItems[i].description;
-          let category = myItems[i].category;
-          let image = myItems[i].image;
-          let rating = myItems[i].rate;
-
-          console.log("done");
           return (myItems[i]);
         }
       }
+      return NaN
     }
 
     return await fetch("http://localhost:8081/").then((response) => {
@@ -224,6 +216,10 @@ function App() {
         }
         console.log(tmp);
         let res = getInputValue(tmp)
+        console.log(res)
+        if (res == NaN){
+          alert('cant find it bro')
+        }
         setPrintJSON(res)
       })
     });
