@@ -1,12 +1,11 @@
 var express = require("express");
 var cors = require("cors");
 var app = express();
-var fs = require("fs");
 var bodyParser = require("body-parser");
 const {MongoClient}= require('mongodb')
 
 const url = "mongodb://127.0.0.1:27017";
-const dbName = "secoms319";
+const dbName = "reactdata";
 const client = new MongoClient(url);
 const db = client.db(dbName);
 
@@ -24,7 +23,7 @@ app.listen(port, () => {
 app.get('/', async (req, res) => {
     await client.connect()
     console.log('connected to mongodb')
-    const results = await db.collection('fakestore').find({}).toArray()
+    const results = await db.collection('fakestore_catalog').find({}).toArray()
     console.log(results)
     res.status(200)
 
@@ -37,7 +36,7 @@ app.delete('/delete/:id', async (req,res)=>{
 
   await client.connect()
   console.log('connected to mongodb')
-  const coll = await db.collection('fakestore').deleteOne({id: id})
+  const coll = await db.collection('fakestore_catalog').deleteOne({id: id})
   if (coll.deletedCount === 0){
       res.send({0: 'no such document found'})
   }else{
@@ -45,24 +44,37 @@ app.delete('/delete/:id', async (req,res)=>{
   }
 })
 
-app.put('/create', async(req,res)=>{
-    console.log('conn')
-    const keys = Object.keys(req.body);
-    const values = Object.values(req.body);
+app.post('/create', async(req,res)=>{
 
-    const newDocument = {
-      id: values[0], 
-      name: values[1], 
-      price: values[2], 
-      description: values[3], 
-      imageUrl: values[4], 
-    };
+  try {
+    await client.connect();
+   const keys = Object.keys(req.body);
+   const values = Object.values(req.body);
 
+   console.log(values[0]);
+   const newDocument = {
+     id: values[0], 
+     title: values[1], 
+     price: values[2], 
+     description: values[3], 
+     category: values[4],
+     imageUrl: values[5], 
+     rating:values[6],
+ };
 
-  await client.connect()
-  console.log('connected to client')
-  const coll = await db.collection('fakestore').insertOne(newDocument)
-  console.log(coll)
+    console.log('Connected to client');
+    const coll = await db.collection('fakestore_catalog').insertOne(newDocument);
+
+    console.log(coll);
+    console.log("Document inserted");
+    alert("Items added successfully!, will auto go to View All");
+    res.status(200).send({ message: "Document inserted successfully" });
+  } catch (error) {
+    console.error("An error occurred:", error);
+    res.status(500).send({ error: "An internal server error occurred" });
+  } finally {
+    await client.close();
+  }
 })
 
 app.put("/updateRobot/:id", async (req, res) => {
@@ -73,7 +85,7 @@ app.put("/updateRobot/:id", async (req, res) => {
   try{
 
   // read data from robot to update to send to frontend
-  const robotUpdated = await db.collection("fakestore").findOne(query);
+  const robotUpdated = await db.collection("fakestore_catalog").findOne(query);
 
   await client.connect();
   console.log("Robot to Update :", id);
@@ -94,7 +106,7 @@ app.put("/updateRobot/:id", async (req, res) => {
 
   // Add options if needed, for example { upsert: true } to create a document if it doesn't exist
   const options = {};
-  const results = await db.collection("fakestore").updateOne(query, updateData, options);
+  const results = await db.collection("fakestore_catalog").updateOne(query, updateData, options);
 
   // If no document was found to update, you can choose to handle it by sending a 404 response
   if (results.matchedCount === 0) {
