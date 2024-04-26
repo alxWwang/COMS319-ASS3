@@ -4,25 +4,32 @@ import { useForm } from "react-hook-form";
 function App() {
   const [Items, setItems] = useState([]);
   const [currentView1, setCurrentView1] = useState(0);
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
+  const [searchItemID, setSearchItemID] = useState(-1);
 
-  const onSubmit = data => {
-
-    const datajson={
+  const onSubmit = (data) => {
+    const datajson = {
       id: parseInt(data.id, 10),
       title: data.title,
-      price:parseFloat(data.price),
+      price: parseFloat(data.price),
       description: data.description,
       category: data.category,
       image: data.image,
-      rating: { rate: parseFloat(data.rate), count: parseInt(data.count) }
-    }
-     console.log(datajson);
+      rating: { rate: parseFloat(data.rate), count: parseInt(data.count) },
+    };
+    console.log(datajson);
 
     // Call the create function to post data to the backend
     create(datajson);
-    
+  };
+
+  const onSubmitDel = (data) => {
+    deletor(data.id);
   };
 
   const changeView = (i) => {
@@ -30,7 +37,6 @@ function App() {
     if (i === 1) {
       loadAll();
     }
-    
   };
 
   let loadAll = async () => {
@@ -108,8 +114,6 @@ function App() {
         setCurrentView1(1);
         //additem
         // setItems([...Items, { ...data}]);
-
-       
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -174,29 +178,89 @@ function App() {
     );
   };
 
-  let DeleteItems = () => {
-    const item = {
-      id: 0,
-      title: "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
-      price: 109.95,
-      description:
-        "Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",
-      category: "men's clothing",
-      image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
-      rating: { rate: 3.9, count: 120 },
-    };
+  let searchItem = (inputItemid) => {
+    fetch("http://localhost:8081/")
+      .then((response) => response.json())
+      .then((myItems) => getInputValue(myItems));
+
+    let id;
+    let title;
+    let price;
+    let description;
+    let category;
+    let imageUrl;
+    let rating;
+
+    function getInputValue(myItems) {
+      for (var i = 0; i < myItems.length; i++) {
+        if (myItems[i].id == inputItemid) {
+          id = myItems[i].id;
+          title = myItems[i].title;
+          price = myItems[i].price;
+          description = myItems[i].description;
+          category = myItems[i].category;
+          imageUrl = myItems[i].imageUrl;
+          rating = myItems[i].rate;
+          break;
+        }
+      }
+    }
 
     return (
-      <button
-        onClick={() => {
-          deletor(item);
-        }}
-      >
-        hello this is delete
-      </button>
+      <>
+        <div key={title}>
+          <div className="col mb-4" key={id}>
+            <div className="card shadow-sm">
+              <img src={imageUrl} alt={title} className="card-img-top" />
+              <div className="card-body">
+                <h5 className="card-title">{title}</h5>
+                <p className="card-text">{price}</p>
+                <p className="card-text">{description}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
     );
   };
 
+  let DeleteItems = () => {
+    // const item = {
+    //   id: 0,
+    //   title: "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
+    //   price: 109.95,
+    //   description:
+    //     "Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",
+    //   category: "men's clothing",
+    //   image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
+    //   rating: { rate: 3.9, count: 120 },
+    // };
+
+    return (
+      <>
+        <div className="container" style={{ paddingTop: "3rem" }}>
+          <form className="container mt-5" style={{ paddingBottom: "3rem" }}>
+            <label htmlFor="id" style={{ paddingTop: "1rem" }}>
+              ID:
+            </label>
+            <input
+              type="text"
+              onChange={(e) => setSearchItemID(e.target.value)} // Update the state when input changes
+              className="form-control"
+            />
+          </form>
+
+          <button onClick={() => searchItem(searchItemID)}>Search</button>
+
+          <div>
+            {searchItemID != -1 && (
+              <button onClick={() => deletor(searchItemID)}>Delete</button>
+            )}
+          </div>
+        </div>
+      </>
+    );
+  };
 
   let CreateItems = () => {
     // const data = {
@@ -210,39 +274,80 @@ function App() {
     // }
     return (
       <>
-      <div className="container" style={{ paddingTop: "3rem" }}>
-      <form onSubmit={handleSubmit(onSubmit)} className="container mt-5">
+        <div className="container" style={{ paddingTop: "3rem" }}>
+          <form onSubmit={handleSubmit(onSubmit)} className="container mt-5">
+            {/* Form fields remain the same, but ensure names match the backend expectations */}
+            <label htmlFor="id" style={{ paddingTop: "1rem" }}>
+              ID:
+            </label>
+            <input {...register("id")} type="text" className="form-control" />
 
-        {/* Form fields remain the same, but ensure names match the backend expectations */}
-        <label htmlFor="id" style={{ paddingTop: "1rem" }}>ID:</label>
-        <input {...register('id')} type="text" className="form-control" />
+            <label htmlFor="title" style={{ paddingTop: "1rem" }}>
+              Title:
+            </label>
+            <input
+              {...register("title")}
+              type="text"
+              className="form-control"
+            />
 
-        <label htmlFor="title" style={{ paddingTop: "1rem" }}>Title:</label>
-        <input {...register('title')} type="text" className="form-control" />
+            <label htmlFor="price" style={{ paddingTop: "1rem" }}>
+              Price:
+            </label>
+            <input
+              {...register("price")}
+              type="text"
+              className="form-control"
+            />
 
-        <label htmlFor="price" style={{ paddingTop: "1rem" }}>Price:</label>
-        <input {...register('price')} type="text" className="form-control" />
+            <label htmlFor="description" style={{ paddingTop: "1rem" }}>
+              Description:
+            </label>
+            <textarea {...register("description")} className="form-control" />
 
-        <label htmlFor="description" style={{ paddingTop: "1rem" }}>Description:</label>
-        <textarea {...register('description')} className="form-control" />
+            <label htmlFor="category" style={{ paddingTop: "1rem" }}>
+              Category:
+            </label>
+            <input
+              {...register("category")}
+              type="text"
+              className="form-control"
+            />
 
-        <label htmlFor="category" style={{ paddingTop: "1rem" }}>Category:</label>
-        <input {...register('category')} type="text" className="form-control" />
+            <label htmlFor="image" style={{ paddingTop: "1rem" }}>
+              Image URL:
+            </label>
+            <input
+              {...register("image")}
+              type="text"
+              className="form-control"
+            />
 
-        <label htmlFor="image" style={{ paddingTop: "1rem" }}>Image URL:</label>
-        <input {...register('image')} type="text" className="form-control" />
+            <label htmlFor="rate" style={{ paddingTop: "1rem" }}>
+              Rate:
+            </label>
+            <input
+              {...register("rate", { valueAsNumber: true })}
+              type="text"
+              className="form-control"
+            />
+            <label htmlFor="count" style={{ paddingTop: "1rem" }}>
+              Count:
+            </label>
+            <input
+              {...register("count", { valueAsNumber: true })}
+              type="text"
+              className="form-control"
+            />
 
-        <label htmlFor="rate" style={{ paddingTop: "1rem" }}>Rate:</label>
-        <input {...register('rate', { valueAsNumber: true })} type="text" className="form-control" />
-        <label htmlFor="count" style={{ paddingTop: "1rem" }}>Count:</label>
-        <input {...register('count', { valueAsNumber: true })} type="text" className="form-control" />
-
-        <button type="submit" className="btn btn-primary ">Add Product</button>
-      </form>
-    </div>
-    </>
+            <button type="submit" className="btn btn-primary ">
+              Add Product
+            </button>
+          </form>
+        </div>
+      </>
     );
-}
+  };
   return (
     <div>
       <section>
