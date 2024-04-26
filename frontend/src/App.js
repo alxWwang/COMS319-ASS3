@@ -6,14 +6,31 @@ function App() {
   const [currentView1, setCurrentView1] = useState(0);
 
   const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
+    register: register1,
+    handleSubmit: handleSubmit1,
+    formState: { errors1 },
+    reset: reset1,
   } = useForm();
 
+  const {
+    register: register2,
+    handleSubmit: handleSubmit2,
+    formState: { errors2 },
+    reset: reset2,
+  } = useForm();
+
+  const [printJSON, setPrintJSON] = useState({});
   const [searchItemID, setSearchItemID] = useState(-1);
 
+  const onSubmit2 = async (data) => {
+    console.log("delete runs");
+    const datajson = {
+      id: data.searchid,
+    };
+    console.log(datajson);
+    await searchItem(datajson)
+    deletor(datajson)
+  };
   const onSubmit = (data) => {
     const datajson = {
       id: parseInt(data.id, 10),
@@ -28,11 +45,6 @@ function App() {
 
     // Call the create function to post data to the backend
     create(datajson);
-  };
-
-  const onSubmit2 = (data) => {
-    console.log(data);
-    // searchItem (data);
   };
 
   const changeView = (i) => {
@@ -83,6 +95,7 @@ function App() {
   };
 
   let deletor = async (data) => {
+    console.log(data);
     try {
       const response = await fetch(`http://localhost:8081/delete/${data.id}`, {
         method: "DELETE",
@@ -112,14 +125,15 @@ function App() {
       .then((response) => response.json())
       .then((data) => {
         console.log("Success:", data);
-        alert("Items added successfully!, pls click the View All button to see your added items"); 
-        reset();   
+        alert(
+          "Items added successfully!, pls click the View All button to see your added items"
+        );
+        reset1();
       })
       .catch((error) => {
         console.error("Error:", error);
         alert("Failed to add items");
       });
-     
   };
 
   let cardArray = Items.map((item) => (
@@ -179,70 +193,78 @@ function App() {
     );
   };
 
-  let searchItem = (inputItemid) => {
-    fetch("http://localhost:8081/")
-      .then((response) => response.json())
-      .then((myItems) => getInputValue(myItems));
-
-    let id;
-    let title;
-    let price;
-    let description;
-    let category;
-    let image;
-    let rating;
+  let searchItem = async (data) => {
+    console.log("searchitem runs");
 
     function getInputValue(myItems) {
-      for (var i = 0; i < myItems.length; i++) {
-        if (myItems[i].id == inputItemid) {
-          id = myItems[i].id;
-          title = myItems[i].title;
-          price = myItems[i].price;
-          description = myItems[i].description;
-          category = myItems[i].category;
-          image = myItems[i].image;
-          rating = myItems[i].rate;
-          break;
+      for (let i in myItems) {
+        if (myItems[i].id === parseInt(data.id)) {
+          let id = myItems[i].id;
+          let title = myItems[i].title;
+          let price = myItems[i].price;
+          let description = myItems[i].description;
+          let category = myItems[i].category;
+          let image = myItems[i].image;
+          let rating = myItems[i].rate;
+
+          console.log("done");
+          return (myItems[i]);
         }
       }
     }
 
-    return (
-      <>
-        <div key={title}>
-          <div className="col mb-4" key={id}>
-            <div className="card shadow-sm">
-              <img src={image} alt={title} className="card-img-top" />
-              <div className="card-body">
-                <h5 className="card-title">{title}</h5>
-                <p className="card-text">{price}</p>
-                <p className="card-text">{description}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </>
-    );
+    return await fetch("http://localhost:8081/").then((response) => {
+      if (!response.ok) {
+        throw new Error("err: ${response.status}");
+      }
+      response.json().then((data) => {
+        let tmp = [];
+        for (let i in data) {
+          tmp.push(data[i]);
+        }
+        console.log(tmp);
+        let res = getInputValue(tmp)
+        setPrintJSON(res)
+      })
+    });
   };
 
   let DeleteItems = () => {
     return (
       <>
         <div className="container" style={{ paddingTop: "3rem" }}>
-          <form onSubmit={handleSubmit(onSubmit2)} className="container mt-5">
+          <form onSubmit={handleSubmit2(onSubmit2)} className="container mt-5">
             {/* Form fields remain the same, but ensure names match the backend expectations */}
-            <label htmlFor="id" style={{ paddingTop: "1rem" }}>
+            <label htmlFor="searchid" style={{ paddingTop: "1rem" }}>
               ID:
             </label>
-            <input {...register("id")} type="text" className="form-control" />
-          </form>
-          <button type="submit" className="btn btn-primary ">
+            <input
+              {...register2("searchid")}
+              type="text"
+              className="form-control"
+            />
+
+            <button type="submit" className="btn btn-primary ">
               Search
-          </button>
-          <div>
-            {searchItemID != -1 && (
-              <button onClick={() => deletor(searchItemID)}>Delete</button>
-            )}
+            </button>
+          </form>
+          <div style={{ paddingTop: "2rem" }}>
+            {
+              <>
+                <div key={printJSON.title}>
+                  <div className="col mb-4" key={printJSON.id}>
+                    <div className="card shadow-sm">
+                      <img src={printJSON.image} alt={printJSON.title} className="card-img-top" />
+                      <div className="card-body">
+                        <h5 className="card-title">{printJSON.title}</h5>
+                        <p className="card-text">{printJSON.price}</p>
+                        <p className="card-text">{printJSON.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            }
           </div>
         </div>
       </>
@@ -251,7 +273,7 @@ function App() {
 
   let CreateItems = () => {
     // const data = {
-    //   id: 0,
+    //   id: 0,sss
     //   title: 'CREATE 2',
     //   price: 99,
     //   description: 'TESITING CREATE',
@@ -262,18 +284,18 @@ function App() {
     return (
       <>
         <div className="container" style={{ paddingTop: "3rem" }}>
-          <form onSubmit={handleSubmit(onSubmit)} className="container mt-5">
+          <form onSubmit={handleSubmit1(onSubmit)} className="container mt-5">
             {/* Form fields remain the same, but ensure names match the backend expectations */}
             <label htmlFor="id" style={{ paddingTop: "1rem" }}>
               ID:
             </label>
-            <input {...register("id")} type="text" className="form-control" />
+            <input {...register1("id")} type="text" className="form-control" />
 
             <label htmlFor="title" style={{ paddingTop: "1rem" }}>
               Title:
             </label>
             <input
-              {...register("title")}
+              {...register1("title")}
               type="text"
               className="form-control"
             />
@@ -282,7 +304,7 @@ function App() {
               Price:
             </label>
             <input
-              {...register("price")}
+              {...register1("price")}
               type="text"
               className="form-control"
             />
@@ -290,13 +312,13 @@ function App() {
             <label htmlFor="description" style={{ paddingTop: "1rem" }}>
               Description:
             </label>
-            <textarea {...register("description")} className="form-control" />
+            <textarea {...register1("description")} className="form-control" />
 
             <label htmlFor="category" style={{ paddingTop: "1rem" }}>
               Category:
             </label>
             <input
-              {...register("category")}
+              {...register1("category")}
               type="text"
               className="form-control"
             />
@@ -305,7 +327,7 @@ function App() {
               Image URL:
             </label>
             <input
-              {...register("image")}
+              {...register1("image")}
               type="text"
               className="form-control"
             />
@@ -314,7 +336,7 @@ function App() {
               Rate:
             </label>
             <input
-              {...register("rate", { valueAsNumber: true })}
+              {...register1("rate", { valueAsNumber: true })}
               type="text"
               className="form-control"
             />
@@ -322,7 +344,7 @@ function App() {
               Count:
             </label>
             <input
-              {...register("count", { valueAsNumber: true })}
+              {...register1("count", { valueAsNumber: true })}
               type="text"
               className="form-control"
             />
