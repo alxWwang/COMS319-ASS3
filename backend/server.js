@@ -52,6 +52,7 @@ app.post('/create', async(req,res)=>{
    const values = Object.values(req.body);
 
    console.log(values[0]);
+   
    const newDocument = {
      id: values[0], 
      title: values[1], 
