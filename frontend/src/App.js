@@ -19,8 +19,27 @@ function App() {
     reset: reset2,
   } = useForm();
 
+  const {
+    register: register3,
+    handleSubmit: handleSubmit3,
+    formState: { errors3 },
+    reset: reset3,
+  } = useForm();
+
   const [printJSON, setPrintJSON] = useState({});
+  const [pendingUpdate, setPendingUpdate]= useState({});
   const [searchItemID, setSearchItemID] = useState(-1);
+
+  const onSubmit3 = async (data) => {
+    const datajson = {
+      id: parseInt(data.id, 10),
+      price: parseFloat(data.price),
+    };
+    console.log(datajson);
+    await searchItem(datajson)
+    setPendingUpdate(datajson)
+    // Call the create function to post data to the backend
+  };
 
   const onSubmit2 = async (data) => {
     console.log("delete runs");
@@ -88,6 +107,13 @@ function App() {
       } else {
         const result = await response.json();
         console.log("Update result:", result);
+        console.log("Success:", data);
+        alert(
+          "Items updated successfully!, pls click the View All button to see your items"
+        );
+        reset3();
+        setPrintJSON({})
+        setPendingUpdate({})
       }
     } catch (error) {
       console.error("Update failed:", error);
@@ -109,7 +135,12 @@ function App() {
         throw new Error(`HTTP error! status: ${response.status}`);
       } else {
         const result = await response.json();
-        console.log("delete result:", result);
+        console.log("Success:", data);
+        alert(
+          "Items deleted successfully!, pls click the View All button to see your items"
+        );
+        reset2();
+        setPrintJSON({})
       }
     } catch (error) {
       console.error("delete failed:", error);
@@ -147,7 +178,8 @@ function App() {
           />
           <div className="card-body">
             <h5 className="card-title">{item["title"]}</h5>
-            <p className="card-text">{item["price"]}</p>
+            <p className="card-text">${item["price"]}</p>
+            <p className="card-text">ID: {item["id"]}</p>
             <p className="card-text">{item["description"]}</p>
           </div>
         </div>
@@ -170,38 +202,64 @@ function App() {
   };
 
   let UpdateItems = () => {
-    const item = {
-      id: 0,
-      title: "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
-      price: 109.95,
-      description:
-        "Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",
-      category: "men's clothing",
-      image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
-      rating: { rate: 3.9, count: 120 },
-    };
-
-    let original = "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops";
     return (
-      <button
-        onClick={() => {
-          update(item);
-        }}
-      >
-        hello this is update
-      </button>
+      <>
+        <div className="container" style={{ paddingTop: "3rem" }}>
+          <form onSubmit={handleSubmit3(onSubmit3)} className="container mt-5">
+            {/* Form fields remain the same, but ensure names match the backend expectations */}
+            <label htmlFor="id" style={{ paddingTop: "1rem" }}>
+              ID:
+            </label>
+            <input {...register3("id")} type="text" className="form-control" />
+
+            <label htmlFor="price" style={{ paddingTop: "1rem" }}>
+              Price:
+            </label>
+            <input
+              {...register3("price")}
+              type="text"
+              className="form-control"
+            />
+            <button type="submit" className="btn btn-primary ">
+              Search
+            </button>
+          </form>
+
+          <div className="container mt-5">
+            {
+              <>
+                <div key={printJSON.title}>
+                  <div className="col mb-4" key={printJSON.id}>
+                    <div className="card shadow-sm">
+                      <img src={printJSON.image} alt={printJSON.title} className="card-img-top" />
+                      <div className="card-body">
+                        <h5 className="card-title">{printJSON.title}</h5>
+                        <p className="card-text">{printJSON.price}</p>
+                        <p className="card-text">{printJSON.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button type="submit" className="btn btn-primary " onClick={()=>{update(pendingUpdate)}}>
+                  update
+                </button>
+              </>
+            }
+          </div>
+        </div>
+      </>
     );
   };
 
   let searchItem = async (data) => {
-    console.log("searchitem runs");
 
-    function getInputValue(myItems) {
+    let getInputValue = (myItems) => {
       for (let i in myItems) {
         if (myItems[i].id === parseInt(data.id)) {
           return (myItems[i]);
         }
       }
+      alert("item not found")
       return NaN
     }
 
@@ -244,7 +302,7 @@ function App() {
               Search
             </button>
           </form>
-          <div style={{ paddingTop: "2rem" }}>
+          <div className="container mt-5">
             {
               <>
                 <div key={printJSON.title}>
@@ -259,6 +317,9 @@ function App() {
                     </div>
                   </div>
                 </div>
+                <button type="submit" className="btn btn-primary " onClick={()=>{deletor(printJSON)}}>
+                  delete
+                </button>
               </>
             }
           </div>
@@ -268,15 +329,6 @@ function App() {
   };
 
   let CreateItems = () => {
-    // const data = {
-    //   id: 0,sss
-    //   title: 'CREATE 2',
-    //   price: 99,
-    //   description: 'TESITING CREATE',
-    //   category: "TESTING CREATE",
-    //   image: 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg',
-    //   rating: { rate: 3.9, count: 120 }
-    // }
     return (
       <>
         <div className="container" style={{ paddingTop: "3rem" }}>
@@ -353,12 +405,16 @@ function App() {
       </>
     );
   };
+
+
   return (
     <div>
       <section>
         <h1 style={{ textAlign: "center", padding: 5 }}>MAPPY Shop</h1>
         <div className="container">
+          
           <button
+            style={{marginRight: '2rem'}}
             type="button"
             className="btn btn-primary"
             variant="light"
@@ -369,6 +425,7 @@ function App() {
             View all
           </button>
           <button
+          style={{marginRight: '2rem'}}
             type="button"
             className="btn btn-primary"
             variant="light"
@@ -379,6 +436,7 @@ function App() {
             Update
           </button>
           <button
+          style={{marginRight: '2rem'}}
             type="button"
             className="btn btn-primary"
             variant="light"
@@ -389,6 +447,7 @@ function App() {
             Delete
           </button>
           <button
+          style={{marginRight: '2rem'}}
             type="button"
             className="btn btn-primary"
             variant="light"

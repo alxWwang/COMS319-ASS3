@@ -95,16 +95,12 @@ app.put("/updateRobot/:id", async (req, res) => {
   // Data for updating the document, typically comes from the request body
   console.log(req.body);
 
-  const updateData = {
-    $set: {
-      category: req.body.category,
-      description: req.body.description,
-      image: req.body.image,
-      price: req.body.price,
-      rating: req.body.rating,
-      title: req.body.title,
-    },
-  };
+    const updateData = {
+      $set: {
+        price: req.body.price,
+      },
+    };
+  
 
   // Add options if needed, for example { upsert: true } to create a document if it doesn't exist
   const options = {};
