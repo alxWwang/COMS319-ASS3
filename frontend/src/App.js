@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import { useForm } from "react-hook-form";
 import nickpic from "/Users/annabelle/Downloads/ass3MAIN/COMS319-ASS3/frontend/src/Images/gsnteng.jpg";
 import annapic from "/Users/annabelle/Downloads/ass3MAIN/COMS319-ASS3/frontend/src/Images/anabelle.jpeg"
