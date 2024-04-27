@@ -51,7 +51,7 @@ function App() {
     await searchItem(datajson);
     //deletor(datajson)
   };
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     const datajson = {
       id: parseInt(data.id, 10),
       title: data.title,
@@ -62,7 +62,7 @@ function App() {
       rating: { rate: parseFloat(data.rate), count: parseInt(data.count) },
     };
     console.log(datajson);
-
+    
     // Call the create function to post data to the backend
     create(datajson);
   };
@@ -285,9 +285,6 @@ function App() {
         console.log(tmp);
         let res = getInputValue(tmp);
         console.log(res);
-        if (res == NaN) {
-          alert("cant find it bro");
-        }
         setPrintJSON(res);
       });
     });
