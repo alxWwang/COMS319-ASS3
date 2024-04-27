@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import nickpic from "/Users/annabelle/Downloads/ass3MAIN/COMS319-ASS3/frontend/src/Images/gsnteng.jpg";
+import annapic from "/Users/annabelle/Downloads/ass3MAIN/COMS319-ASS3/frontend/src/Images/anabelle.jpeg"
 
 function App() {
   const [Items, setItems] = useState([]);
@@ -27,7 +29,7 @@ function App() {
   } = useForm();
 
   const [printJSON, setPrintJSON] = useState({});
-  const [pendingUpdate, setPendingUpdate]= useState({});
+  const [pendingUpdate, setPendingUpdate] = useState({});
 
   const onSubmit3 = async (data) => {
     const datajson = {
@@ -35,8 +37,8 @@ function App() {
       price: parseFloat(data.price),
     };
     console.log(datajson);
-    await searchItem(datajson)
-    setPendingUpdate(datajson)
+    await searchItem(datajson);
+    setPendingUpdate(datajson);
     // Call the create function to post data to the backend
   };
 
@@ -46,7 +48,7 @@ function App() {
       id: data.searchid,
     };
     console.log(datajson);
-    await searchItem(datajson)
+    await searchItem(datajson);
     //deletor(datajson)
   };
   const onSubmit = (data) => {
@@ -111,8 +113,8 @@ function App() {
           "Items updated successfully!, pls click the View All button to see your items"
         );
         reset3();
-        setPrintJSON({})
-        setPendingUpdate({})
+        setPrintJSON({});
+        setPendingUpdate({});
       }
     } catch (error) {
       console.error("Update failed:", error);
@@ -139,7 +141,7 @@ function App() {
           "Items deleted successfully!, pls click the View All button to see your items"
         );
         reset2();
-        setPrintJSON({})
+        setPrintJSON({});
       }
     } catch (error) {
       console.error("delete failed:", error);
@@ -230,7 +232,11 @@ function App() {
                 <div key={printJSON.title}>
                   <div className="col mb-4" key={printJSON.id}>
                     <div className="card shadow-sm">
-                      <img src={printJSON.image} alt={printJSON.title} className="card-img-top" />
+                      <img
+                        src={printJSON.image}
+                        alt={printJSON.title}
+                        className="card-img-top"
+                      />
                       <div className="card-body">
                         <h5 className="card-title">{printJSON.title}</h5>
                         <p className="card-text">{printJSON.price}</p>
@@ -239,7 +245,13 @@ function App() {
                     </div>
                   </div>
                 </div>
-                <button type="submit" className="btn btn-primary " onClick={()=>{update(pendingUpdate)}}>
+                <button
+                  type="submit"
+                  className="btn btn-primary "
+                  onClick={() => {
+                    update(pendingUpdate);
+                  }}
+                >
                   update
                 </button>
               </>
@@ -251,16 +263,15 @@ function App() {
   };
 
   let searchItem = async (data) => {
-
     let getInputValue = (myItems) => {
       for (let i in myItems) {
         if (myItems[i].id === parseInt(data.id)) {
-          return (myItems[i]);
+          return myItems[i];
         }
       }
-      alert("item not found")
-      return NaN
-    }
+      alert("item not found");
+      return NaN;
+    };
 
     return await fetch("http://localhost:8081/").then((response) => {
       if (!response.ok) {
@@ -272,13 +283,13 @@ function App() {
           tmp.push(data[i]);
         }
         console.log(tmp);
-        let res = getInputValue(tmp)
-        console.log(res)
-        if (res == NaN){
-          alert('cant find it bro')
+        let res = getInputValue(tmp);
+        console.log(res);
+        if (res == NaN) {
+          alert("cant find it bro");
         }
-        setPrintJSON(res)
-      })
+        setPrintJSON(res);
+      });
     });
   };
 
@@ -307,7 +318,11 @@ function App() {
                 <div key={printJSON.title}>
                   <div className="col mb-4" key={printJSON.id}>
                     <div className="card shadow-sm">
-                      <img src={printJSON.image} alt={printJSON.title} className="card-img-top" />
+                      <img
+                        src={printJSON.image}
+                        alt={printJSON.title}
+                        className="card-img-top"
+                      />
                       <div className="card-body">
                         <h5 className="card-title">{printJSON.title}</h5>
                         <p className="card-text">{printJSON.price}</p>
@@ -316,7 +331,13 @@ function App() {
                     </div>
                   </div>
                 </div>
-                <button type="submit" className="btn btn-primary " onClick={()=>{deletor(printJSON)}}>
+                <button
+                  type="submit"
+                  className="btn btn-primary "
+                  onClick={() => {
+                    deletor(printJSON);
+                  }}
+                >
                   delete
                 </button>
               </>
@@ -405,15 +426,116 @@ function App() {
     );
   };
 
+  let StudentItems = () => {
+    return (
+      <>
+        <section>
+          <h1 style={{ textAlign: "center", padding: "5%" }}>About info</h1>
+          <section id="about">
+            <div class="container">
+              <img
+                src={nickpic}
+                alt="Profile Photo"
+                style={{ width: "100%" }}
+              />
+              <h1>Nicholas Wang</h1>
+              <p
+                style={{
+                  fontfamily: "Courier New', Courier, monospace",
+                  color: "brown",
+                }}
+              >
+                Web Developer
+              </p>
+              <p>
+                My name is Nicholas Wang, currently i am a sophomore at Iowa
+                State University studying Computer Science. I have always been
+                interested in web development and programming. This website
+                serves as my portfolio showcasing some of the projects that I've
+                worked on.
+              </p>
+              <section id="contact" class="contact">
+                <p>Phone: +1 (515) 815-4987</p>
+
+                <p>Email: nawang2@iastate.edu</p>
+
+                <p>Instagram: alx__wang</p>
+              </section>
+            </div>
+          </section>
+        </section>
+
+        <section>
+          <section id="about">
+            <div class="container">
+              <img
+                src={annapic}
+                alt="Profile Photo"
+                style={{ width: "100%" }}
+              />
+              <h1>Yi Yun Khor </h1>
+              <p
+                style={{
+                  fontfamily: "Courier New', Courier, monospace",
+                  color: "brown",
+                }}
+              >
+                UI Developer
+              </p>
+              <p>
+                My name is Yi Yun Khor, currently i am a senior at Iowa State
+                University studying Computer Science. I have always been
+                interested in UI and UX design. This website serves as contact
+                info for job seeking.
+              </p>
+              <section id="contact" class="contact">
+                <p>Phone: +1 (515) 520-5750</p>
+
+                <p>Email: belle27@iastate.edu</p>
+
+                <p>Instagram: yiyunkhor</p>
+              </section>
+            </div>
+          </section>
+        </section>
+
+        <section>
+          <h1 style={{ textAlign: "center", padding: "5%" }}>Course info</h1>
+          <section id="about">
+            <div class="container">
+              <div style={{ textAlign: "center" }}>
+                <h3>COMS319 </h3>
+                <h3>Construction of User Interfaces </h3>
+                <p>Dr. Abraham Aldaco</p>
+                <p
+                  style={{
+                    fontfamily: "Courier New', Courier, monospace",
+                    color: "brown",
+                  }}
+                >
+                  27 April 2024
+                </p>
+              </div>
+              <p>
+                This Assignment 03 focuses on developing a MERN (MongoDB, Express, React, Node.js) 
+                application to manage a product catalog using data from "https://fakestoreapi.com/products". 
+                The task requires implementing CRUD functionalities—Create, Read, Update, and Delete—in a user-friendly, single-page interface.
+                Students must ensure data integration and manipulation exclusively via MongoDB, enhancing the frontend with Bootstrap or Tailwind CSS.
+              </p>
+            </div>
+          </section>
+        </section>
+      </>
+    );
+  };
 
   return (
     <div>
       <section>
         <h1 style={{ textAlign: "center", padding: 5 }}>MAPPY Shop</h1>
         <div className="container">
-          
           <button
-            style={{marginRight: '2rem'}}
+            style={{ marginRight: "2rem" }}
             type="button"
             className="btn btn-primary"
             variant="light"
@@ -424,7 +546,7 @@ function App() {
             View all
           </button>
           <button
-          style={{marginRight: '2rem'}}
+            style={{ marginRight: "2rem" }}
             type="button"
             className="btn btn-primary"
             variant="light"
@@ -435,7 +557,7 @@ function App() {
             Update
           </button>
           <button
-          style={{marginRight: '2rem'}}
+            style={{ marginRight: "2rem" }}
             type="button"
             className="btn btn-primary"
             variant="light"
@@ -446,7 +568,7 @@ function App() {
             Delete
           </button>
           <button
-          style={{marginRight: '2rem'}}
+            style={{ marginRight: "2rem" }}
             type="button"
             className="btn btn-primary"
             variant="light"
@@ -456,6 +578,17 @@ function App() {
           >
             Create
           </button>
+          <button
+            style={{ marginRight: "2rem" }}
+            type="button"
+            className="btn btn-primary"
+            variant="light"
+            onClick={() => {
+              changeView(5);
+            }}
+          >
+            Information
+          </button>
         </div>
       </section>
 
@@ -464,6 +597,7 @@ function App() {
         {currentView1 === 2 && <UpdateItems />}
         {currentView1 === 3 && <DeleteItems />}
         {currentView1 === 4 && <CreateItems />}
+        {currentView1 === 5 && <StudentItems />}
       </div>
     </div>
   );
