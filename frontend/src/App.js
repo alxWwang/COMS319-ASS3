@@ -28,7 +28,6 @@ function App() {
 
   const [printJSON, setPrintJSON] = useState({});
   const [pendingUpdate, setPendingUpdate]= useState({});
-  const [searchItemID, setSearchItemID] = useState(-1);
 
   const onSubmit3 = async (data) => {
     const datajson = {
